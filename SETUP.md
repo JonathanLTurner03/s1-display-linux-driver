@@ -257,6 +257,39 @@ Cleaned up unnecessary files:
 ✅ **Separated concerns** (core, widgets, web, scripts)
 ✅ **Professional layout** ready for GitHub
 
+## Updating After Code Changes
+
+When you modify the code, use the update script:
+
+```bash
+sudo ./scripts/update.sh
+```
+
+**Options:**
+1. **Python code only** - Updates dashboard, widgets, drivers
+2. **Web interface only** - Updates HTML, CSS, JS
+3. **Everything** - Updates all files
+4. **Just restart** - Restarts services without copying files
+
+**Quick update (most common):**
+```bash
+cd s1-display-linux-driver
+sudo ./scripts/update.sh
+# Choose 1 (Python code only)
+# Choose 3 (Restart both services)
+```
+
+**Manual update:**
+```bash
+# Copy files
+sudo cp -r src/* /opt/s1-display/src/
+sudo cp -r web/* /opt/s1-display/web/
+
+# Restart services
+sudo systemctl restart s1-dashboard.service
+sudo systemctl restart s1-web.service
+```
+
 ## Next Steps
 
 1. Install on hecate using instructions above

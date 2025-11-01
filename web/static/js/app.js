@@ -377,6 +377,41 @@ function showWidgetProperties(widgetId) {
         `;
     }
 
+    // Time widget specific options
+    if (widgetId === 'time') {
+        html += `
+            <div class="form-group">
+                <label>Time Format</label>
+                <select onchange="updateWidgetFormat('${widgetId}', this.value)">
+                    <option value="24h" ${widgetConfig.format === '24h' ? 'selected' : ''}>24 Hour</option>
+                    <option value="12h" ${widgetConfig.format === '12h' ? 'selected' : ''}>12 Hour</option>
+                </select>
+            </div>
+        `;
+
+        if (widgetConfig.format === '12h') {
+            html += `
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" ${widgetConfig.show_am_pm !== false ? 'checked' : ''}
+                               onchange="updateWidgetShowAmPm('${widgetId}', this.checked)">
+                        Show AM/PM
+                    </label>
+                </div>
+            `;
+        }
+
+        html += `
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" ${widgetConfig.show_seconds ? 'checked' : ''}
+                           onchange="updateWidgetShowSeconds('${widgetId}', this.checked)">
+                    Show Seconds
+                </label>
+            </div>
+        `;
+    }
+
     panel.innerHTML = html;
 }
 
@@ -424,6 +459,54 @@ function updateWidgetShowBar(widgetId, showBar) {
 
     target.show_bar = showBar;
     showToast('Setting updated');
+}
+
+// Update widget format (12h/24h)
+function updateWidgetFormat(widgetId, format) {
+    const widgetInfo = availableWidgets.find(w => w.id === widgetId);
+    if (!widgetInfo) return;
+
+    const keys = widgetInfo.config_key.split('.');
+    let target = config;
+    for (const key of keys) {
+        target = target[key];
+    }
+
+    target.format = format;
+    showToast('Time format updated');
+
+    // Refresh properties panel to show/hide AM/PM option
+    showWidgetProperties(widgetId);
+}
+
+// Update widget show AM/PM
+function updateWidgetShowAmPm(widgetId, showAmPm) {
+    const widgetInfo = availableWidgets.find(w => w.id === widgetId);
+    if (!widgetInfo) return;
+
+    const keys = widgetInfo.config_key.split('.');
+    let target = config;
+    for (const key of keys) {
+        target = target[key];
+    }
+
+    target.show_am_pm = showAmPm;
+    showToast('AM/PM setting updated');
+}
+
+// Update widget show seconds
+function updateWidgetShowSeconds(widgetId, showSeconds) {
+    const widgetInfo = availableWidgets.find(w => w.id === widgetId);
+    if (!widgetInfo) return;
+
+    const keys = widgetInfo.config_key.split('.');
+    let target = config;
+    for (const key of keys) {
+        target = target[key];
+    }
+
+    target.show_seconds = showSeconds;
+    showToast('Seconds setting updated');
 }
 
 // Clear all widgets

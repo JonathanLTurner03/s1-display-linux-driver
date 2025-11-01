@@ -12,6 +12,7 @@ time:
   enabled: true
   format: 24h  # 24h or 12h
   show_seconds: false
+  show_am_pm: true  # Show AM/PM for 12h format (only applies when format is 12h)
   position: top  # top, center, bottom, or [x, y]
   color: [255, 255, 255]  # RGB
   size: large  # small, medium, large

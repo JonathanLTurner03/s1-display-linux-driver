@@ -90,7 +90,9 @@ Edit `config.yaml` directly if preferred:
 ```yaml
 time:
   enabled: true
-  format: 24h
+  format: 24h  # or 12h for 12-hour format
+  show_seconds: false
+  show_am_pm: true  # Show AM/PM (only for 12h format)
   color: [255, 255, 255]
 
 hostname:

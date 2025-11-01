@@ -58,6 +58,7 @@ class TimeWidget(Widget):
         now = datetime.now()
         fmt = self.config.get('format', '24h')
         show_seconds = self.config.get('show_seconds', False)
+        show_am_pm = self.config.get('show_am_pm', True)  # Show AM/PM by default for 12h
 
         if fmt == '24h':
             if show_seconds:
@@ -65,8 +66,15 @@ class TimeWidget(Widget):
             return now.strftime("%H:%M")
         else:  # 12h
             if show_seconds:
-                return now.strftime("%I:%M:%S %p")
-            return now.strftime("%I:%M %p")
+                time_str = now.strftime("%I:%M:%S")
+            else:
+                time_str = now.strftime("%I:%M")
+
+            # Add AM/PM if enabled
+            if show_am_pm:
+                am_pm = now.strftime("%p")
+                return f"{time_str} {am_pm}"
+            return time_str
 
 
 class DateWidget(Widget):
