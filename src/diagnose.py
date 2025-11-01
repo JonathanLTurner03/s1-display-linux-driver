@@ -8,6 +8,8 @@ import hid
 import sys
 import os
 
+# No display imports needed for diagnostics
+
 
 def check_usb_device():
     """Check if USB device is visible"""

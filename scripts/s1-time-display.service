@@ -5,7 +5,7 @@ Wants=multi-user.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /opt/s1-display/time_display.py
+ExecStart=/usr/bin/python3 /opt/s1-display/src/time_display.py
 Restart=always
 RestartSec=10
 User=root

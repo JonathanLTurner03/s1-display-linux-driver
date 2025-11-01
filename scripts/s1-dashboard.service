@@ -1,0 +1,20 @@
+[Unit]
+Description=AceMagic S1 Dashboard Service
+After=multi-user.target network-online.target
+Wants=multi-user.target network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/s1-display/src/dashboard.py /opt/s1-display/config.yaml
+Restart=always
+RestartSec=10
+User=root
+WorkingDirectory=/opt/s1-display/src
+StandardOutput=journal
+StandardError=journal
+
+# Environment variables
+Environment="PYTHONUNBUFFERED=1"
+
+[Install]
+WantedBy=multi-user.target

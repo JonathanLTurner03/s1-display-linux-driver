@@ -1,0 +1,116 @@
+# AceMagic S1 Display Configuration
+# Enable/disable widgets and customize display
+
+# Display Settings
+display:
+  orientation: landscape  # landscape or portrait
+  background_color: [0, 0, 0]  # RGB 0-255
+  update_interval: 1  # seconds
+
+# Time Widget
+time:
+  enabled: true
+  format: 24h  # 24h or 12h
+  show_seconds: false
+  position: top  # top, center, bottom, or [x, y]
+  color: [255, 255, 255]  # RGB
+  size: large  # small, medium, large
+
+# Date Widget
+date:
+  enabled: true
+  format: "%a %b %d"  # strftime format
+  position: below_time
+  color: [200, 200, 200]
+
+# Hostname Widget
+hostname:
+  enabled: true
+  position: auto
+  color: [100, 200, 255]
+  prefix: "Host: "
+
+# Network Info
+network:
+  # Local IP (primary interface)
+  local_ip:
+    enabled: true
+    position: auto
+    color: [100, 255, 100]
+    prefix: "LAN: "
+    interface: auto  # auto, eth0, wlan0, etc.
+
+  # Tailscale IP
+  tailscale_ip:
+    enabled: true
+    position: auto
+    color: [200, 100, 255]
+    prefix: "TS: "
+
+  # Public IP
+  public_ip:
+    enabled: false  # Disabled by default (makes external request)
+    position: auto
+    color: [255, 200, 100]
+    prefix: "WAN: "
+    update_interval: 300  # seconds (5 min)
+
+# System Monitoring
+system:
+  # CPU Usage
+  cpu_usage:
+    enabled: true
+    position: auto
+    color: [255, 255, 100]
+    show_bar: true
+
+  # Memory Usage
+  memory_usage:
+    enabled: true
+    position: auto
+    color: [100, 255, 255]
+    show_bar: true
+
+  # Disk Usage
+  disk_usage:
+    enabled: false
+    position: auto
+    color: [255, 100, 255]
+    path: "/"
+
+  # Temperature
+  temperature:
+    enabled: false
+    position: auto
+    color: [255, 150, 0]
+    source: auto  # auto, /sys/class/thermal/thermal_zone0/temp, etc.
+
+# Server Monitoring
+servers:
+  - name: "HomeServer"
+    host: "192.168.1.100"
+    port: 22  # Optional, defaults to ping
+    enabled: true
+    position: auto
+    color_online: [0, 255, 0]
+    color_offline: [255, 0, 0]
+    check_interval: 10  # seconds
+
+  # Add more servers as needed
+  # - name: "WebServer"
+  #   host: "example.com"
+  #   port: 80
+  #   enabled: true
+
+# Custom Text
+custom_text:
+  - text: ""
+    position: auto
+    color: [150, 150, 150]
+    enabled: false
+
+# Layout
+layout:
+  mode: auto  # auto, manual, grid
+  padding: 5
+  line_spacing: 2

@@ -5,8 +5,14 @@ Shows current time in large format on horizontal display
 """
 
 import time
+import sys
+import os
 from datetime import datetime
-from s1_display import S1Display
+
+# Add current directory to path for imports
+sys.path.insert(0, os.path.dirname(__file__))
+
+from core.s1_display import S1Display
 
 
 # 7-segment style digit patterns (5x7 pixels each, scaled up)

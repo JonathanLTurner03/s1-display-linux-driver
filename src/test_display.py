@@ -5,7 +5,13 @@ Performs basic tests to verify display is working
 """
 
 import time
-from s1_display import S1Display
+import sys
+import os
+
+# Add current directory to path for imports
+sys.path.insert(0, os.path.dirname(__file__))
+
+from core.s1_display import S1Display
 
 
 def test_connection():
