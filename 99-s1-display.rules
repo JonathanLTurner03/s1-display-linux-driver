@@ -1,0 +1,17 @@
+# udev rules for AceMagic S1 Display
+# This allows non-root users to access the S1 display device
+#
+# Installation:
+#   sudo cp 99-s1-display.rules /etc/udev/rules.d/
+#   sudo udevadm control --reload-rules
+#   sudo udevadm trigger
+#
+# Then unplug and replug the device, or reboot
+
+# AceMagic S1 TFT Display (Holtek HT32)
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="fd01", MODE="0666", GROUP="plugdev"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="fd01", MODE="0666", GROUP="plugdev"
+
+# Alternative: grant access to all users
+# SUBSYSTEM=="hidraw", ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="fd01", MODE="0666"
+# SUBSYSTEM=="usb", ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="fd01", MODE="0666"

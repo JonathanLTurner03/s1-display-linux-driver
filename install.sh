@@ -20,7 +20,7 @@ apt-get install -y python3 python3-pip libhidapi-hidraw0 libhidapi-libusb0
 
 # Install Python dependencies
 echo "Installing Python dependencies..."
-pip3 install -r requirements.txt
+pip3 install -r requirements.txt --break-system-packages
 
 # Create installation directory
 echo "Creating installation directory..."

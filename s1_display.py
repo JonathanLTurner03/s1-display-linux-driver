@@ -47,19 +47,58 @@ class S1Display:
     def connect(self) -> bool:
         """Connect to the S1 display device"""
         try:
-            # Find the vendor-defined interface (not the consumer control)
-            for dev in hid.enumerate(self.VID, self.PID):
+            # Enumerate all matching devices
+            devices = hid.enumerate(self.VID, self.PID)
+
+            if not devices:
+                print(f"No devices found with VID={hex(self.VID)}, PID={hex(self.PID)}")
+                print("\nTroubleshooting:")
+                print("1. Check if device is connected: lsusb | grep 04d9:fd01")
+                print("2. You may need to run with sudo")
+                print("3. Or install udev rules (see 99-s1-display.rules)")
+                return False
+
+            print(f"Found {len(devices)} device interface(s)")
+
+            # Try each interface
+            for idx, dev in enumerate(devices):
+                print(f"\nInterface {idx}:")
+                print(f"  Path: {dev['path']}")
+                print(f"  Manufacturer: {dev['manufacturer_string']}")
+                print(f"  Product: {dev['product_string']}")
+                print(f"  Usage Page: {hex(dev['usage_page'])}")
+                print(f"  Usage: {hex(dev['usage'])}")
+                print(f"  Interface: {dev['interface_number']}")
+
                 # Skip consumer control interface (usage_page 0x0C)
-                if dev['usage_page'] != 0x0C:
+                # We want the vendor-defined interface
+                if dev['usage_page'] == 0x0C:
+                    print("  -> Skipping (consumer control interface)")
+                    continue
+
+                # Try to open this interface
+                try:
+                    print("  -> Attempting to open...")
                     self.device = hid.device()
                     self.device.open_path(dev['path'])
-                    print(f"Connected to S1 Display: {dev['product_string']}")
+                    print(f"  -> Successfully opened!")
+                    print(f"\nConnected to S1 Display: {dev['product_string']}")
                     return True
+                except Exception as open_error:
+                    print(f"  -> Failed to open: {open_error}")
+                    self.device = None
+                    continue
 
-            print("S1 Display not found")
+            print("\nFailed to open any suitable interface")
+            print("\nIf you see 'Permission denied' errors:")
+            print("1. Run with sudo: sudo python3 test_display.py")
+            print("2. Or install udev rules: sudo cp 99-s1-display.rules /etc/udev/rules.d/")
             return False
+
         except Exception as e:
-            print(f"Error connecting to device: {e}")
+            print(f"Error during device enumeration: {e}")
+            import traceback
+            traceback.print_exc()
             return False
 
     def disconnect(self):
