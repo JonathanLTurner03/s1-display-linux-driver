@@ -368,6 +368,31 @@ function showWidgetProperties(widgetId) {
         </div>
     `;
 
+    // Position control
+    if (widgetConfig.position !== undefined) {
+        const currentPosition = widgetConfig.position;
+        const isAuto = currentPosition === 'auto' || currentPosition === 'below_time';
+        const positionDisplay = typeof currentPosition === 'string' ? currentPosition :
+                              (Array.isArray(currentPosition) ? `[${currentPosition[0]}, ${currentPosition[1]}]` : 'auto');
+
+        html += `
+            <div class="form-group">
+                <label>Position</label>
+                <select onchange="updateWidgetPosition('${widgetId}', this.value)" style="width: 100%;">
+                    <option value="auto" ${currentPosition === 'auto' ? 'selected' : ''}>Auto</option>
+                    <option value="top" ${currentPosition === 'top' ? 'selected' : ''}>Top</option>
+                    <option value="center" ${currentPosition === 'center' ? 'selected' : ''}>Center</option>
+                    <option value="bottom" ${currentPosition === 'bottom' ? 'selected' : ''}>Bottom</option>
+                    <option value="below_time" ${currentPosition === 'below_time' ? 'selected' : ''}>Below Time</option>
+                    <option value="custom" ${!isAuto && typeof currentPosition !== 'string' ? 'selected' : ''}>Custom [x, y]</option>
+                </select>
+                <small style="color: #7f8c8d; font-size: 11px; display: block; margin-top: 4px;">
+                    Current: ${positionDisplay}
+                </small>
+            </div>
+        `;
+    }
+
     // Color picker
     if (widgetConfig.color) {
         const color = widgetConfig.color;
@@ -465,6 +490,31 @@ function showServerWidgetProperties(widgetId, server, serverIdx) {
             </div>
         </div>
     `;
+
+    // Position control
+    if (server.position !== undefined) {
+        const currentPosition = server.position;
+        const isAuto = currentPosition === 'auto' || currentPosition === 'below_time';
+        const positionDisplay = typeof currentPosition === 'string' ? currentPosition :
+                              (Array.isArray(currentPosition) ? `[${currentPosition[0]}, ${currentPosition[1]}]` : 'auto');
+
+        html += `
+            <div class="form-group">
+                <label>Position</label>
+                <select onchange="updateServerPosition(${serverIdx}, this.value)" style="width: 100%;">
+                    <option value="auto" ${currentPosition === 'auto' ? 'selected' : ''}>Auto</option>
+                    <option value="top" ${currentPosition === 'top' ? 'selected' : ''}>Top</option>
+                    <option value="center" ${currentPosition === 'center' ? 'selected' : ''}>Center</option>
+                    <option value="bottom" ${currentPosition === 'bottom' ? 'selected' : ''}>Bottom</option>
+                    <option value="below_time" ${currentPosition === 'below_time' ? 'selected' : ''}>Below Time</option>
+                    <option value="custom" ${!isAuto && typeof currentPosition !== 'string' ? 'selected' : ''}>Custom [x, y]</option>
+                </select>
+                <small style="color: #7f8c8d; font-size: 11px; display: block; margin-top: 4px;">
+                    Current: ${positionDisplay}
+                </small>
+            </div>
+        `;
+    }
 
     // Server name
     html += `
@@ -649,11 +699,67 @@ function updateWidgetFontSize(widgetId, fontSize) {
     showToast(`Font size set to ${fontSize}`);
 }
 
+// Update widget position
+function updateWidgetPosition(widgetId, position) {
+    const widgetInfo = availableWidgets.find(w => w.id === widgetId);
+    if (!widgetInfo) return;
+
+    const keys = widgetInfo.config_key.split('.');
+    let target = config;
+    for (const key of keys) {
+        target = target[key];
+    }
+
+    // Handle custom position (would require additional input)
+    if (position === 'custom') {
+        const customPos = prompt('Enter custom position as [x, y] (e.g., [10, 20]):');
+        if (customPos) {
+            try {
+                target.position = JSON.parse(customPos);
+                showToast('Position updated to custom coordinates');
+            } catch (e) {
+                showToast('Invalid format. Use [x, y]', 'error');
+                return;
+            }
+        }
+    } else {
+        target.position = position;
+        showToast(`Position set to ${position}`);
+    }
+
+    // Refresh properties to show updated position
+    showWidgetProperties(widgetId);
+}
+
 // Server widget update functions
 function updateServerFontSize(serverIdx, fontSize) {
     if (config.servers && config.servers[serverIdx]) {
         config.servers[serverIdx].font_scale = parseInt(fontSize);
         showToast(`Font size set to ${fontSize}`);
+    }
+}
+
+function updateServerPosition(serverIdx, position) {
+    if (config.servers && config.servers[serverIdx]) {
+        if (position === 'custom') {
+            const customPos = prompt('Enter custom position as [x, y] (e.g., [10, 20]):');
+            if (customPos) {
+                try {
+                    config.servers[serverIdx].position = JSON.parse(customPos);
+                    showToast('Position updated to custom coordinates');
+                } catch (e) {
+                    showToast('Invalid format. Use [x, y]', 'error');
+                    return;
+                }
+            }
+        } else {
+            config.servers[serverIdx].position = position;
+            showToast(`Position set to ${position}`);
+        }
+
+        // Refresh properties to show updated position
+        const widgetId = `server_${serverIdx}`;
+        showWidgetProperties(widgetId);
     }
 }
 
