@@ -6,9 +6,12 @@
 sudo ./scripts/update.sh
 ```
 
-Choose option 1 (Python code) or 2 (Web interface), then restart services.
+**The script will ask:**
+1. Pull from git? (y/N) - Say yes if updating from repository
+2. What to update? (Python/Web/Everything)
+3. Restart services?
 
-**Your config.yaml is always preserved!**
+**Your config.yaml is always preserved!** (Backups created automatically)
 
 ## Adding New Config Options
 

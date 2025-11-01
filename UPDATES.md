@@ -8,6 +8,20 @@ After making any code changes, run:
 sudo ./scripts/update.sh
 ```
 
+### Git Pull (Optional)
+
+If this is a git repository, the script will ask:
+```
+Pull latest code from git? (y/N):
+```
+
+**If you answer 'y':**
+- ✅ Your local `config.yaml` is backed up first (timestamped)
+- ✅ Code is pulled from git repository
+- ✅ Backup ensures your config isn't lost if git overwrites it
+
+**Default is 'N'** - assumes you already pulled or made local changes.
+
 ### Update Options
 
 **1. Python code only** (most common)
@@ -29,9 +43,18 @@ sudo ./scripts/update.sh
 
 ### Quick Examples
 
-**You modified widgets.py:**
+**Pulling updates from git:**
 ```bash
 sudo ./scripts/update.sh
+# Pull from git? y
+# Choose 1 (Python code)
+# Choose 3 (Restart both)
+```
+
+**You modified widgets.py locally:**
+```bash
+sudo ./scripts/update.sh
+# Pull from git? N (default)
 # Choose 1 (Python code)
 # Choose 3 (Restart both)
 ```
@@ -39,13 +62,15 @@ sudo ./scripts/update.sh
 **You modified web interface colors:**
 ```bash
 sudo ./scripts/update.sh
+# Pull from git? N
 # Choose 2 (Web interface)
 # Choose 2 (Restart web only)
 ```
 
-**You modified everything:**
+**Pulling everything from git:**
 ```bash
 sudo ./scripts/update.sh
+# Pull from git? y
 # Choose 3 (Everything)
 # Choose 3 (Restart both)
 ```

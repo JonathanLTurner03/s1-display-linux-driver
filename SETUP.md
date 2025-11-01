@@ -275,9 +275,12 @@ sudo ./scripts/update.sh
 ```bash
 cd s1-display-linux-driver
 sudo ./scripts/update.sh
+# Pull from git? y (if updating from repository)
 # Choose 1 (Python code only)
 # Choose 3 (Restart both services)
 ```
+
+**Note:** The script will automatically backup your `config.yaml` before pulling from git.
 
 **Manual update:**
 ```bash

@@ -108,6 +108,12 @@ cpu_usage: {enabled: true, font_scale: 2}   # Less important
 - Left-aligned with padding
 - Same font available to all
 
+### Server Monitor Widgets
+- Default: 2 (small)
+- Range: 1-5
+- Supports font_scale like all other widgets
+- Set individually for each server
+
 ## Tips & Tricks
 
 ### Fit More Info
@@ -155,10 +161,22 @@ time: {font_scale: 3}
 cpu_usage: {font_scale: 1, show_bar: true}
 memory_usage: {font_scale: 1, show_bar: true}
 local_ip: {font_scale: 1}
-server1: {font_scale: 1}
-server2: {font_scale: 1}
-server3: {font_scale: 1}
+servers:
+  - {name: "Web", host: "192.168.1.10", font_scale: 1, enabled: true}
+  - {name: "DB", host: "192.168.1.11", font_scale: 1, enabled: true}
+  - {name: "Cache", host: "192.168.1.12", font_scale: 1, enabled: true}
 # Fits time + 6 monitoring items
+```
+
+### Priority Server Monitoring
+
+Emphasize critical server:
+```yaml
+time: {font_scale: 4}
+servers:
+  - {name: "PROD-WEB", host: "10.0.1.100", font_scale: 3, enabled: true}  # Critical
+  - {name: "DEV-WEB", host: "10.0.2.100", font_scale: 2, enabled: true}   # Normal
+  - {name: "TEST-WEB", host: "10.0.3.100", font_scale: 1, enabled: true}  # Small
 ```
 
 ## How It Works
@@ -203,9 +221,9 @@ time: {font_scale: 4}
 cpu_usage: {font_scale: 2, show_bar: true}
 memory_usage: {font_scale: 2, show_bar: true}
 servers:
-  - {name: "Server1", font_scale: 2}
-  - {name: "Server2", font_scale: 2}
-  - {name: "Server3", font_scale: 2}
+  - {name: "Server1", host: "192.168.1.10", font_scale: 2, enabled: true}
+  - {name: "Server2", host: "192.168.1.11", font_scale: 2, enabled: true}
+  - {name: "Server3", host: "192.168.1.12", font_scale: 2, enabled: true}
 ```
 
 ### Information Dashboard

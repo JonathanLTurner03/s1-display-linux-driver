@@ -23,6 +23,23 @@ cd "$PROJECT_ROOT"
 echo "Updating from: $PROJECT_ROOT"
 echo
 
+# Ask about git pull
+if [ -d .git ]; then
+    read -p "Pull latest code from git? (y/N): " git_pull
+    if [[ "$git_pull" =~ ^[Yy]$ ]]; then
+        echo "Backing up local config.yaml..."
+        if [ -f config.yaml ]; then
+            cp config.yaml config.yaml.backup.$(date +%Y%m%d_%H%M%S)
+            echo "✓ Config backed up"
+        fi
+
+        echo "Pulling from git..."
+        git pull
+        echo "✓ Git pull complete"
+        echo
+    fi
+fi
+
 # Ask what to update
 echo "What would you like to update?"
 echo "1) Python code only (dashboard, widgets, etc.)"
