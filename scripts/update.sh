@@ -77,30 +77,48 @@ elif [ "$choice" = "3" ]; then
         if [ "$config_choice" = "1" ]; then
             echo "✓ Keeping current config.yaml"
             echo "  Note: New options like 'show_am_pm' may need to be added manually"
+            echo "  Tip: Compare with config.yaml.template for new options"
         elif [ "$config_choice" = "2" ]; then
             echo "Creating backup..."
             cp /opt/s1-display/config.yaml /opt/s1-display/config.yaml.backup.$(date +%Y%m%d_%H%M%S)
-            cp config.yaml /opt/s1-display/config.yaml
-            echo "✓ Config updated (backup saved as config.yaml.backup.*)"
+            if [ -f config.yaml.template ]; then
+                cp config.yaml.template /opt/s1-display/config.yaml
+                echo "✓ Config updated from template (backup saved as config.yaml.backup.*)"
+            else
+                cp config.yaml /opt/s1-display/config.yaml
+                echo "✓ Config updated (backup saved as config.yaml.backup.*)"
+            fi
             echo "  Review your old settings in the backup file"
         elif [ "$config_choice" = "3" ]; then
             echo ""
-            echo "=== Differences between current and new config ==="
-            diff -u /opt/s1-display/config.yaml config.yaml || true
+            echo "=== Differences between current and template config ==="
+            CONFIG_SOURCE="config.yaml.template"
+            if [ ! -f "$CONFIG_SOURCE" ]; then
+                CONFIG_SOURCE="config.yaml"
+            fi
+            diff -u /opt/s1-display/config.yaml "$CONFIG_SOURCE" || true
             echo "=================================================="
             echo ""
             read -p "Update config? (y/N): " update_confirm
             if [[ "$update_confirm" =~ ^[Yy]$ ]]; then
                 cp /opt/s1-display/config.yaml /opt/s1-display/config.yaml.backup.$(date +%Y%m%d_%H%M%S)
-                cp config.yaml /opt/s1-display/config.yaml
+                cp "$CONFIG_SOURCE" /opt/s1-display/config.yaml
                 echo "✓ Config updated (backup saved)"
             else
                 echo "✓ Keeping current config"
             fi
         fi
     else
-        cp config.yaml /opt/s1-display/config.yaml
-        echo "✓ Config installed"
+        # First install - use template if available
+        if [ -f config.yaml.template ]; then
+            cp config.yaml.template /opt/s1-display/config.yaml
+            echo "✓ Config installed from template"
+        elif [ -f config.yaml ]; then
+            cp config.yaml /opt/s1-display/config.yaml
+            echo "✓ Config installed"
+        else
+            echo "⚠ Warning: No config file found!"
+        fi
     fi
 
     echo "✓ All files updated"

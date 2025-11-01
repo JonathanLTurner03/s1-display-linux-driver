@@ -36,7 +36,19 @@ mkdir -p /opt/s1-display/src/core /opt/s1-display/src/widgets /opt/s1-display/we
 echo "Copying files..."
 cp -r src/* /opt/s1-display/src/
 cp -r web/* /opt/s1-display/web/
-cp config.yaml /opt/s1-display/
+
+# Handle config.yaml
+if [ ! -f /opt/s1-display/config.yaml ]; then
+    echo "Creating config.yaml from template..."
+    if [ -f config.yaml ]; then
+        cp config.yaml /opt/s1-display/
+    else
+        cp config.yaml.template /opt/s1-display/config.yaml
+    fi
+else
+    echo "Preserving existing config.yaml"
+fi
+
 chmod +x /opt/s1-display/src/time_display.py
 chmod +x /opt/s1-display/src/dashboard.py
 chmod +x /opt/s1-display/web/app.py

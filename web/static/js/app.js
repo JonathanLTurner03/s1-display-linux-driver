@@ -325,6 +325,17 @@ function selectWidget(widgetId) {
 // Show widget properties panel
 function showWidgetProperties(widgetId) {
     const panel = document.getElementById('properties-content');
+
+    // Check if this is a server widget
+    if (widgetId.startsWith('server_')) {
+        const serverIdx = parseInt(widgetId.split('_')[1]);
+        if (config.servers && config.servers[serverIdx]) {
+            const server = config.servers[serverIdx];
+            showServerWidgetProperties(widgetId, server, serverIdx);
+            return;
+        }
+    }
+
     const widgetInfo = availableWidgets.find(w => w.id === widgetId);
 
     if (!widgetInfo) {
@@ -428,6 +439,95 @@ function showWidgetProperties(widgetId) {
             </div>
         `;
     }
+
+    panel.innerHTML = html;
+}
+
+// Show server widget properties
+function showServerWidgetProperties(widgetId, server, serverIdx) {
+    const panel = document.getElementById('properties-content');
+
+    let html = `<h3>🖥️ ${server.name || 'Server'}</h3>`;
+
+    // Font size
+    const fontSize = server.font_scale || 2;
+    html += `
+        <div class="form-group">
+            <label>Font Size: <span id="font-size-label-${widgetId}">${fontSize}</span></label>
+            <input type="range" min="1" max="5" value="${fontSize}"
+                   oninput="updateFontSizeLabel('${widgetId}', this.value)"
+                   onchange="updateServerFontSize(${serverIdx}, this.value)"
+                   style="width: 100%;">
+            <div style="display: flex; justify-content: space-between; font-size: 10px; color: #7f8c8d;">
+                <span>Small</span>
+                <span>Medium</span>
+                <span>Large</span>
+            </div>
+        </div>
+    `;
+
+    // Server name
+    html += `
+        <div class="form-group">
+            <label>Server Name</label>
+            <input type="text" value="${server.name || ''}"
+                   onchange="updateServerName(${serverIdx}, this.value)">
+        </div>
+    `;
+
+    // Host
+    html += `
+        <div class="form-group">
+            <label>Host/IP</label>
+            <input type="text" value="${server.host || ''}"
+                   onchange="updateServerHost(${serverIdx}, this.value)">
+        </div>
+    `;
+
+    // Port (optional)
+    html += `
+        <div class="form-group">
+            <label>Port (optional, leave empty for ping)</label>
+            <input type="number" value="${server.port || ''}"
+                   onchange="updateServerPort(${serverIdx}, this.value)">
+        </div>
+    `;
+
+    // Online color
+    if (server.color_online) {
+        const onlineColor = server.color_online;
+        const hexOnline = rgbToHex(onlineColor[0], onlineColor[1], onlineColor[2]);
+        html += `
+            <div class="form-group">
+                <label>Online Color</label>
+                <input type="color" value="${hexOnline}"
+                       onchange="updateServerOnlineColor(${serverIdx}, this.value)">
+            </div>
+        `;
+    }
+
+    // Offline color
+    if (server.color_offline) {
+        const offlineColor = server.color_offline;
+        const hexOffline = rgbToHex(offlineColor[0], offlineColor[1], offlineColor[2]);
+        html += `
+            <div class="form-group">
+                <label>Offline Color</label>
+                <input type="color" value="${hexOffline}"
+                       onchange="updateServerOfflineColor(${serverIdx}, this.value)">
+            </div>
+        `;
+    }
+
+    // Remove button
+    html += `
+        <div class="form-group">
+            <button onclick="removeServerWidget(${serverIdx})"
+                    style="width: 100%; padding: 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                Remove Server
+            </button>
+        </div>
+    `;
 
     panel.innerHTML = html;
 }
@@ -547,6 +647,62 @@ function updateWidgetFontSize(widgetId, fontSize) {
 
     target.font_scale = parseInt(fontSize);
     showToast(`Font size set to ${fontSize}`);
+}
+
+// Server widget update functions
+function updateServerFontSize(serverIdx, fontSize) {
+    if (config.servers && config.servers[serverIdx]) {
+        config.servers[serverIdx].font_scale = parseInt(fontSize);
+        showToast(`Font size set to ${fontSize}`);
+    }
+}
+
+function updateServerName(serverIdx, name) {
+    if (config.servers && config.servers[serverIdx]) {
+        config.servers[serverIdx].name = name;
+        renderDisplay();
+        showToast('Server name updated');
+    }
+}
+
+function updateServerHost(serverIdx, host) {
+    if (config.servers && config.servers[serverIdx]) {
+        config.servers[serverIdx].host = host;
+        showToast('Server host updated');
+    }
+}
+
+function updateServerPort(serverIdx, port) {
+    if (config.servers && config.servers[serverIdx]) {
+        config.servers[serverIdx].port = port ? parseInt(port) : null;
+        showToast('Server port updated');
+    }
+}
+
+function updateServerOnlineColor(serverIdx, hexColor) {
+    if (config.servers && config.servers[serverIdx]) {
+        const rgb = hexToRgb(hexColor);
+        config.servers[serverIdx].color_online = [rgb.r, rgb.g, rgb.b];
+        showToast('Online color updated');
+    }
+}
+
+function updateServerOfflineColor(serverIdx, hexColor) {
+    if (config.servers && config.servers[serverIdx]) {
+        const rgb = hexToRgb(hexColor);
+        config.servers[serverIdx].color_offline = [rgb.r, rgb.g, rgb.b];
+        showToast('Offline color updated');
+    }
+}
+
+function removeServerWidget(serverIdx) {
+    if (config.servers && config.servers[serverIdx]) {
+        if (confirm(`Remove server "${config.servers[serverIdx].name}"?`)) {
+            config.servers[serverIdx].enabled = false;
+            renderDisplay();
+            showToast('Server removed');
+        }
+    }
 }
 
 // Clear all widgets

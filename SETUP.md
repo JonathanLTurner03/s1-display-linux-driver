@@ -2,8 +2,6 @@
 
 ## Project Structure
 
-The project is now cleanly organized:
-
 ```
 s1-display-linux-driver/
 ├── src/                        # All Python source code

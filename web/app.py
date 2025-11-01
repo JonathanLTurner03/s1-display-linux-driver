@@ -17,9 +17,15 @@ app = Flask(__name__)
 
 CONFIG_PATH = '/opt/s1-display/config.yaml'
 LOCAL_CONFIG_PATH = os.path.join(os.path.dirname(__file__), '..', 'config.yaml')
+TEMPLATE_CONFIG_PATH = os.path.join(os.path.dirname(__file__), '..', 'config.yaml.template')
 
-# Use local config if deployed version doesn't exist
-ACTIVE_CONFIG_PATH = CONFIG_PATH if os.path.exists(CONFIG_PATH) else LOCAL_CONFIG_PATH
+# Use deployed config, fall back to local config, then template
+if os.path.exists(CONFIG_PATH):
+    ACTIVE_CONFIG_PATH = CONFIG_PATH
+elif os.path.exists(LOCAL_CONFIG_PATH):
+    ACTIVE_CONFIG_PATH = LOCAL_CONFIG_PATH
+else:
+    ACTIVE_CONFIG_PATH = TEMPLATE_CONFIG_PATH
 
 
 def load_config():
