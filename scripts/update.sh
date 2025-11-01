@@ -46,7 +46,46 @@ elif [ "$choice" = "3" ]; then
     echo "Updating everything..."
     cp -r src/* /opt/s1-display/src/
     cp -r web/* /opt/s1-display/web/
-    cp config.yaml /opt/s1-display/ 2>/dev/null || echo "Skipping config.yaml (edit manually if needed)"
+
+    # Handle config.yaml carefully
+    if [ -f /opt/s1-display/config.yaml ]; then
+        echo ""
+        echo "config.yaml exists. What would you like to do?"
+        echo "1) Keep current config (recommended - preserves your settings)"
+        echo "2) Create backup and update with new template"
+        echo "3) Show differences between current and new config"
+        read -p "Enter choice [1-3] (default: 1): " config_choice
+        config_choice=${config_choice:-1}
+
+        if [ "$config_choice" = "1" ]; then
+            echo "✓ Keeping current config.yaml"
+            echo "  Note: New options like 'show_am_pm' may need to be added manually"
+        elif [ "$config_choice" = "2" ]; then
+            echo "Creating backup..."
+            cp /opt/s1-display/config.yaml /opt/s1-display/config.yaml.backup.$(date +%Y%m%d_%H%M%S)
+            cp config.yaml /opt/s1-display/config.yaml
+            echo "✓ Config updated (backup saved as config.yaml.backup.*)"
+            echo "  Review your old settings in the backup file"
+        elif [ "$config_choice" = "3" ]; then
+            echo ""
+            echo "=== Differences between current and new config ==="
+            diff -u /opt/s1-display/config.yaml config.yaml || true
+            echo "=================================================="
+            echo ""
+            read -p "Update config? (y/N): " update_confirm
+            if [[ "$update_confirm" =~ ^[Yy]$ ]]; then
+                cp /opt/s1-display/config.yaml /opt/s1-display/config.yaml.backup.$(date +%Y%m%d_%H%M%S)
+                cp config.yaml /opt/s1-display/config.yaml
+                echo "✓ Config updated (backup saved)"
+            else
+                echo "✓ Keeping current config"
+            fi
+        fi
+    else
+        cp config.yaml /opt/s1-display/config.yaml
+        echo "✓ Config installed"
+    fi
+
     echo "✓ All files updated"
 
 elif [ "$choice" = "4" ]; then

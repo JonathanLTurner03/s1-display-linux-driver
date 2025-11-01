@@ -340,6 +340,23 @@ function showWidgetProperties(widgetId) {
 
     let html = `<h3>${widgetInfo.icon} ${widgetInfo.name}</h3>`;
 
+    // Font size
+    const fontSize = widgetConfig.font_scale || 2;
+    html += `
+        <div class="form-group">
+            <label>Font Size: <span id="font-size-label-${widgetId}">${fontSize}</span></label>
+            <input type="range" min="1" max="5" value="${fontSize}"
+                   oninput="updateFontSizeLabel('${widgetId}', this.value)"
+                   onchange="updateWidgetFontSize('${widgetId}', this.value)"
+                   style="width: 100%;">
+            <div style="display: flex; justify-content: space-between; font-size: 10px; color: #7f8c8d;">
+                <span>Small</span>
+                <span>Medium</span>
+                <span>Large</span>
+            </div>
+        </div>
+    `;
+
     // Color picker
     if (widgetConfig.color) {
         const color = widgetConfig.color;
@@ -507,6 +524,29 @@ function updateWidgetShowSeconds(widgetId, showSeconds) {
 
     target.show_seconds = showSeconds;
     showToast('Seconds setting updated');
+}
+
+// Update font size label (live preview while dragging slider)
+function updateFontSizeLabel(widgetId, size) {
+    const label = document.getElementById(`font-size-label-${widgetId}`);
+    if (label) {
+        label.textContent = size;
+    }
+}
+
+// Update widget font size
+function updateWidgetFontSize(widgetId, fontSize) {
+    const widgetInfo = availableWidgets.find(w => w.id === widgetId);
+    if (!widgetInfo) return;
+
+    const keys = widgetInfo.config_key.split('.');
+    let target = config;
+    for (const key of keys) {
+        target = target[key];
+    }
+
+    target.font_scale = parseInt(fontSize);
+    showToast(`Font size set to ${fontSize}`);
 }
 
 // Clear all widgets

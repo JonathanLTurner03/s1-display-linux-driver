@@ -140,6 +140,61 @@ Hard refresh your browser: `Ctrl+F5` or `Cmd+Shift+R`
    ```
 5. **Verify** on display or web interface
 
+## Config File Handling
+
+The update script **preserves your config.yaml** by default:
+
+### Option 1 & 2: Python/Web Updates
+- ✅ Config is NOT touched
+- Your settings are completely preserved
+
+### Option 3: Everything Update
+You'll be asked what to do with config.yaml:
+
+**1. Keep current config (recommended)**
+- ✅ Preserves all your settings
+- ⚠️ New options (like `show_am_pm`) need to be added manually
+
+**2. Backup and use new template**
+- Creates timestamped backup: `config.yaml.backup.20250101_123456`
+- ⚠️ Replaces with new template (loses custom settings)
+- Need to copy settings from backup
+
+**3. Show differences**
+- Shows diff between current and new
+- You decide whether to update
+
+### Adding New Config Options
+
+If you kept your config but need new options:
+
+```bash
+sudo ./scripts/update-config.sh
+```
+
+This helper script will:
+- Show differences between configs
+- Offer to automatically add new options (like `show_am_pm`)
+- Create backups before any changes
+
+**Example: Adding AM/PM support manually**
+```bash
+sudo nano /opt/s1-display/config.yaml
+```
+
+Add under the `time:` section:
+```yaml
+time:
+  enabled: true
+  format: 12h
+  show_am_pm: true  # Add this line
+```
+
+Save and restart:
+```bash
+sudo systemctl restart s1-dashboard.service
+```
+
 ## What Files Are Updated
 
 ### Python Code Update (Option 1)

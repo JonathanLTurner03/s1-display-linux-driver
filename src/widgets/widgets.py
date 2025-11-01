@@ -50,6 +50,10 @@ class Widget(ABC):
         color = self.config.get('color', [255, 255, 255])
         return tuple(color)
 
+    def get_font_scale(self) -> int:
+        """Get font scale for this widget (1-5, default 2)"""
+        return self.config.get('font_scale', 2)
+
 
 class TimeWidget(Widget):
     """Display current time"""

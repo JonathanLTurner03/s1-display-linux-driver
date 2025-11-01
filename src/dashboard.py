@@ -163,34 +163,39 @@ class Dashboard:
 
             color = widget.get_color()
 
+            # Get font scale from widget config
+            font_scale = widget.get_font_scale()
+
             # Handle special rendering for certain widgets
             if name == 'time':
-                # Large time at top center
-                self.font.draw_text_centered_5x7(self.layout_y, text, *color, scale=6)
-                self.layout_y += (7 * 6) + line_spacing + 3
+                # Large time at top center (use configured scale or default to 6)
+                time_scale = font_scale if font_scale > 2 else 6
+                self.font.draw_text_centered_5x7(self.layout_y, text, *color, scale=time_scale)
+                self.layout_y += (7 * time_scale) + line_spacing + 3
             elif name == 'date':
-                # Centered date below time
-                self.font.draw_text_centered_3x5(self.layout_y, text, *color, scale=2)
-                self.layout_y += (5 * 2) + line_spacing + 3
+                # Centered date (use configured scale or default to 2)
+                date_scale = font_scale if font_scale <= 3 else 2
+                self.font.draw_text_centered_3x5(self.layout_y, text, *color, scale=date_scale)
+                self.layout_y += (5 * date_scale) + line_spacing + 3
             elif name in ['cpu', 'memory']:
                 # System widgets with progress bars
-                self.font.draw_text_3x5(padding, self.layout_y, text, *color, scale=2)
+                self.font.draw_text_3x5(padding, self.layout_y, text, *color, scale=font_scale)
 
                 if hasattr(widget, 'get_usage_percent') and widget.show_bar:
                     # Draw progress bar
-                    bar_x = padding + 80
+                    bar_x = padding + (40 * font_scale)
                     bar_y = self.layout_y
                     bar_width = 60
-                    bar_height = 8
+                    bar_height = max(8, font_scale * 4)
                     percent = widget.get_usage_percent()
                     self.font.draw_progress_bar(bar_x, bar_y, bar_width, bar_height,
                                                 percent, color)
 
-                self.layout_y += (5 * 2) + line_spacing
+                self.layout_y += (5 * font_scale) + line_spacing
             else:
-                # Regular small text
-                self.font.draw_text_3x5(padding, self.layout_y, text, *color, scale=2)
-                self.layout_y += (5 * 2) + line_spacing
+                # Regular text with configurable scale
+                self.font.draw_text_3x5(padding, self.layout_y, text, *color, scale=font_scale)
+                self.layout_y += (5 * font_scale) + line_spacing
 
         # Update display
         self.display.update_display()

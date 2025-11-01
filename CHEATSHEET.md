@@ -8,6 +8,16 @@ sudo ./scripts/update.sh
 
 Choose option 1 (Python code) or 2 (Web interface), then restart services.
 
+**Your config.yaml is always preserved!**
+
+## Adding New Config Options
+
+```bash
+sudo ./scripts/update-config.sh
+```
+
+Helps merge new options (like `show_am_pm`) into your existing config.
+
 ## Common Commands
 
 ```bash
@@ -34,19 +44,24 @@ sudo systemctl status s1-web.service
 http://hecate:5000
 ```
 
-## Enable AM/PM
+## Enable AM/PM & Change Font Size
 
 **Web Interface:**
-1. Click Time widget
-2. Select "12 Hour" format
-3. Toggle "Show AM/PM"
-4. Save & Restart
+1. Click any widget on display
+2. Adjust "Font Size" slider (1-5)
+3. For time: Select "12 Hour" format
+4. Toggle "Show AM/PM"
+5. Save & Restart
 
 **Config File:**
 ```yaml
 time:
   format: 12h
   show_am_pm: true
+  font_scale: 6  # 1-5 (or higher for time)
+
+hostname:
+  font_scale: 2  # 1=tiny, 2=small, 3=medium, 4=large, 5=huge
 ```
 
 ## Quick Config Examples
