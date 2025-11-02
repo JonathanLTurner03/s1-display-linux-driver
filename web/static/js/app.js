@@ -368,7 +368,6 @@ function showWidgetProperties(widgetId) {
         </div>
     `;
 
-<<<<<<< HEAD
     // Position control (always show, default to 'auto')
     const currentPosition = widgetConfig.position || 'auto';
     const isAuto = currentPosition === 'auto' || currentPosition === 'below_time';
@@ -391,32 +390,6 @@ function showWidgetProperties(widgetId) {
             </small>
         </div>
     `;
-=======
-    // Position control
-    if (widgetConfig.position !== undefined) {
-        const currentPosition = widgetConfig.position;
-        const isAuto = currentPosition === 'auto' || currentPosition === 'below_time';
-        const positionDisplay = typeof currentPosition === 'string' ? currentPosition :
-                              (Array.isArray(currentPosition) ? `[${currentPosition[0]}, ${currentPosition[1]}]` : 'auto');
-
-        html += `
-            <div class="form-group">
-                <label>Position</label>
-                <select onchange="updateWidgetPosition('${widgetId}', this.value)" style="width: 100%;">
-                    <option value="auto" ${currentPosition === 'auto' ? 'selected' : ''}>Auto</option>
-                    <option value="top" ${currentPosition === 'top' ? 'selected' : ''}>Top</option>
-                    <option value="center" ${currentPosition === 'center' ? 'selected' : ''}>Center</option>
-                    <option value="bottom" ${currentPosition === 'bottom' ? 'selected' : ''}>Bottom</option>
-                    <option value="below_time" ${currentPosition === 'below_time' ? 'selected' : ''}>Below Time</option>
-                    <option value="custom" ${!isAuto && typeof currentPosition !== 'string' ? 'selected' : ''}>Custom [x, y]</option>
-                </select>
-                <small style="color: #7f8c8d; font-size: 11px; display: block; margin-top: 4px;">
-                    Current: ${positionDisplay}
-                </small>
-            </div>
-        `;
-    }
->>>>>>> a1080a4393d1ef393d8ab835a53cfb8968ac101a
 
     // Color picker
     if (widgetConfig.color) {
@@ -516,7 +489,6 @@ function showServerWidgetProperties(widgetId, server, serverIdx) {
         </div>
     `;
 
-<<<<<<< HEAD
     // Position control (always show, default to 'auto')
     const currentPosition = server.position || 'auto';
     const isAuto = currentPosition === 'auto' || currentPosition === 'below_time';
@@ -539,32 +511,6 @@ function showServerWidgetProperties(widgetId, server, serverIdx) {
             </small>
         </div>
     `;
-=======
-    // Position control
-    if (server.position !== undefined) {
-        const currentPosition = server.position;
-        const isAuto = currentPosition === 'auto' || currentPosition === 'below_time';
-        const positionDisplay = typeof currentPosition === 'string' ? currentPosition :
-                              (Array.isArray(currentPosition) ? `[${currentPosition[0]}, ${currentPosition[1]}]` : 'auto');
-
-        html += `
-            <div class="form-group">
-                <label>Position</label>
-                <select onchange="updateServerPosition(${serverIdx}, this.value)" style="width: 100%;">
-                    <option value="auto" ${currentPosition === 'auto' ? 'selected' : ''}>Auto</option>
-                    <option value="top" ${currentPosition === 'top' ? 'selected' : ''}>Top</option>
-                    <option value="center" ${currentPosition === 'center' ? 'selected' : ''}>Center</option>
-                    <option value="bottom" ${currentPosition === 'bottom' ? 'selected' : ''}>Bottom</option>
-                    <option value="below_time" ${currentPosition === 'below_time' ? 'selected' : ''}>Below Time</option>
-                    <option value="custom" ${!isAuto && typeof currentPosition !== 'string' ? 'selected' : ''}>Custom [x, y]</option>
-                </select>
-                <small style="color: #7f8c8d; font-size: 11px; display: block; margin-top: 4px;">
-                    Current: ${positionDisplay}
-                </small>
-            </div>
-        `;
-    }
->>>>>>> a1080a4393d1ef393d8ab835a53cfb8968ac101a
 
     // Server name
     html += `
